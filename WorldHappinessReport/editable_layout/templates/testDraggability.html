@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resizable + Draggable Grid (with Layout Sync)</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #ffcc70;
+      text-align: center;
+    }
+
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .grid-item {
+      background-color: #fae9e3;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+      width: 300px;
+      height: auto;
+    }
+
+    .grid-item .title {
+      background-color: #fff3e0;
+      padding: 10px;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .grid-item .image-container {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .grid-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .grid-item .insight {
+      background-color: #ffffff;
+      color: #000;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .ui-resizable-handle {
+      background: #ffcc70;
+    }
+  </style>
+</head>
+<body>
+
+<h2>World Happiness Index Report (2015–2019)</h2>
+
+<div class="grid">
+  <div class="grid-item">
+    <div class="title">Chart 1</div>
+    <div class="image-container">
+      <img src="https://via.placeholder.com/300x200" alt="Image 1">
+    </div>
+    <div class="insight">Insight for chart 1</div>
+  </div>
+  <div class="grid-item">
+    <div class="title">Chart 2</div>
+    <div class="image-container">
+      <img src="https://via.placeholder.com/300x200" alt="Image 2">
+    </div>
+    <div class="insight">Insight for chart 2</div>
+  </div>
+  <div class="grid-item">
+    <div class="title">Chart 3</div>
+    <div class="image-container">
+      <img src="https://via.placeholder.com/300x200" alt="Image 3">
+    </div>
+    <div class="insight">Insight for chart 3</div>
+  </div>
+  <div class="grid-item">
+    <div class="title">Chart 4</div>
+    <div class="image-container">
+      <img src="https://via.placeholder.com/300x200" alt="Image 4">
+    </div>
+    <div class="insight">Insight for chart 4</div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script>
+<script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
+
+<script>
+  $(function () {
+    const $grid = $('.grid').packery({
+      itemSelector: '.grid-item',
+      gutter: 10
+    });
+
+    $grid.find('.grid-item').each(function () {
+      const item = this;
+
+      // Draggabilly for proper Packery dragging
+      const draggie = new Draggabilly(item);
+      $grid.packery('bindDraggabillyEvents', draggie);
+
+      // jQuery UI resizable for the whole item (not internals)
+      $(item).resizable({
+        handles: 'se',
+        resize: function () {
+          $grid.packery('fit', item);
+        },
+        stop: function () {
+          $grid.packery('layout');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

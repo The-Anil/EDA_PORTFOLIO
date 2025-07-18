@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resizable and Draggable Grid</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #ffcc70;
+      text-align: center;
+    }
+
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .grid-item {
+      background-color: #fae9e3;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .resizable-heading, .resizable-insight {
+      background-color: #fff3e0;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .resizable-image {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .resizable-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .ui-resizable-handle {
+  background: #000000;
+  width: 6px;
+  height: 6px;
+}
+
+
+  </style>
+</head>
+<body>
+
+<h2>World Happiness Index Report (2015–2019)</h2>
+
+<div class="grid">
+  <div class="grid-item">
+    <div class="resizable-heading">Title 1</div>
+    <div class="resizable-image">
+      <img src="static/Fig_1_1.png" alt="Image 1">
+    </div>
+    <div class="resizable-insight">Insight 1: The average happiness score has shown a steady increase from 2015 to 2019.</div>
+  </div>
+  <div class="grid-item">
+    <div class="resizable-heading">Title 2</div>
+    <div class="resizable-image">
+      <img src="static/Fig_1_2.png" alt="Image 2">
+    </div>
+    <div class="resizable-insight">Insight 2: The top 10 countries consistently rank high in happiness.</div>
+  </div>
+  <div class="grid-item">
+    <div class="resizable-heading">Title 3</div>
+    <div class="resizable-image">
+      <img src="static/Fig_1_3.png" alt="Image 3">
+    </div>
+    <div class="resizable-insight">Insight 3: The bottom 10 countries show significant fluctuations in their scores.</div>
+  </div>
+  <div class="grid-item">
+    <div class="resizable-heading">Title 4</div>
+    <div class="resizable-image">
+      <img src="static/Fig_1_2.png" alt="Image 4">
+    </div>
+    <div class="resizable-insight">Insight 4: Economic factors play a significant role in happiness scores.</div>
+  </div>
+</div>
+
+<!-- Include jQuery, jQuery UI, and Packery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script>
+
+<script>
+  $(function () {
+    // Initialize Packery
+    var $grid = $('.grid').packery({
+      itemSelector: '.grid-item',
+      gutter: 10
+    });
+
+    // Make grid items draggable
+    $grid.find('.grid-item').each(function () {
+      var $this = $(this);
+      $this.draggable({
+        handle: '.resizable-heading',
+        stop: function () {
+          $grid.packery('layout');
+        }
+      });
+    });
+
+    // Make grid items resizable
+    $grid.find('.grid-item').each(function () {
+      var $item = $(this);
+      $item.resizable({
+        handles: 'all',
+        resize: function () {
+          $grid.packery('fit', $item[0]);
+        },
+        stop: function () {
+          $grid.packery('layout');
+        }
+      });
+
+      // Make internal components resizable
+      $item.find('.resizable-heading, .resizable-image, .resizable-insight').resizable({
+        handles: 's',
+        alsoResize: $item,
+        resize: function () {
+          $grid.packery('fit', $item[0]);
+        },
+        stop: function () {
+          $grid.packery('layout');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
